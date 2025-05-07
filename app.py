@@ -18,17 +18,17 @@ base_model = AutoModelForCausalLM.from_pretrained(
 model = PeftModel.from_pretrained(base_model, model_path)
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-# Database schema (replace with your schema)
-SCHEMA = """Table: customers
-- customer_id (INT, Primary Key): Unique identifier for a customer.
-- name (VARCHAR): Customer's full name.
-- email (VARCHAR): Customer's email address.
+# Load schema from file
+def load_schema(file_path="schema.txt"): # make sure to place schema txt
+    try:
+        with open(file_path, "r") as file:
+            return file.read().strip()
+    except FileNotFoundError:
+        return "Error: schema.txt not found"
+    except Exception as e:
+        return f"Error loading schema: {str(e)}"
 
-Table: orders
-- order_id (INT, Primary Key): Unique identifier for an order.
-- customer_id (INT, Foreign Key: references customers.customer_id): ID of the customer who placed the order.
-- order_date (DATE): Date the order was placed.
-- amount (DECIMAL): Total order amount."""
+SCHEMA = load_schema()
 
 # Database connection
 def execute_query(query):
